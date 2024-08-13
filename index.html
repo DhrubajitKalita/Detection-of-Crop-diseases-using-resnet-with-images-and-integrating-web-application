@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Tutorial</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+</head>
+<style>
+  body {
+    background-image: url(img1.jpg);
+    display: flex;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+  }
+
+  .container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 50px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+  }
+
+  h1 {
+
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    color: #333;
+    font-family: 'Poppins', sans-serif;
+    font-size: 60px;
+    font-style: inherit;
+
+
+  }
+
+  .form-control {
+    width: 300px;
+    height: 50px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    border: 2px solid #ccc;
+    background-color: #fff;
+    margin-bottom: 20px;
+  }
+
+  #preview {
+    display: none;
+    max-width: 100%;
+    max-height: 300px;
+    border: 2px solid #ddd;
+    padding: 10px;
+    background-color: #fff;
+  }
+
+  .btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    position: relative;
+
+
+    font-size: 16px;
+
+
+
+
+
+    text-decoration: none;
+    overflow: hidden;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: #fff;
+    transition: width 0.3s ease, left 0.3s ease;
+  }
+
+  .btn:hover {
+    background-color: #0056b3;
+  }
+
+  .btn:hover::after {
+    width: 100%;
+    left: 0;
+  }
+
+  #responseDisp {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 17px;
+    color: #333;
+    padding: 15px; /* Increased padding for better spacing */
+    border: 1px solid #ccc;
+    border-radius: 5px; /* Slightly more rounded corners */
+    background-color: #f9f9f9;
+    max-width: 500px; /* Slightly wider for better readability */
+    word-wrap: break-word;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adding a subtle shadow */
+    transition: all 0.3s ease; /* Smooth transition for all properties */
+    margin-left: auto;
+    margin-right: auto; /* Center the box horizontally */
+    font-style: italic;
+    background-color: grey;
+    
+
+}
+
+#responseDisp:hover {
+    background-color: #f1f1f1; /* Change background on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* More pronounced shadow on hover */
+    border-color: #bbb; /* Slightly darker border on hover */
+}
+
+#responseDisp:focus {
+    outline: none; /* Remove default focus outline */
+    border-color: #007bff; /* Add blue border on focus */
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.25); /* Add blue shadow on focus */
+}
+
+  
+</style>
+
+<body>
+  <h1 class="text-center">Plant Disease Detection</h1>
+  <div>
+
+    <div class="container">
+      <input class="form-control" type="file" name="imagefile" id="imagefile" accept="image/*">
+      <img id="preview" src="" alt="Image Preview">
+    </div>
+    <input class="btn" type="submit" value="Predict Image" onclick="predict()">
+    <p id="responseDisp"></p>
+
+</body>
+<script>
+  function predict() {
+    var input = document.getElementById('imagefile');
+    var display = document.getElementById('responseDisp');
+    display.innerHTML = ''
+
+    // Get the file name from the input
+    try {
+
+      var imageName = input.files[0].name;
+      if (imageName != "") {
+        fetch(`http://127.0.0.1:5000/img?imgName=${imageName}`).then((response) => response.json()).then((data) => {
+          console.log(data)
+          display.innerHTML = `<b>Image Name: </b>${data.imgName}<br><b>Predicted as: </b>${data.modelResponse}`
+        });
+      }
+    } catch (e) {
+      display.innerHTML = "Please select an image"
+    }
+
+  }
+
+</script>
+<script>
+  document.getElementById('imagefile').addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const preview = document.getElementById('preview');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      }
+      reader.readAsDataURL(file);
+    }
+  });
+
+</script>
+
+</html>
